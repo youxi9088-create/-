@@ -1,0 +1,7 @@
+{
+  "status": "BLOCKED",
+  "source": "E:\\AI改编游戏\\换装斗地主\\角色五态包\\linxing\\linxing_A02_play_v1_chroma-despill.webm",
+  "reason": "technical acceptance 1920x1080 failed: Traceback (most recent call last):\n  File \"C:\\Users\\986916\\.agents\\skills\\repair-webm-alpha\\scripts\\validate_webm_alpha.py\", line 181, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"C:\\Users\\986916\\.agents\\skills\\repair-webm-alpha\\scripts\\validate_webm_alpha.py\", line 169, in main\n    raise RuntimeError(f\"edge screen-colour spill region exceeds limit: max {edge_spill_region_max} pixels, limit {args.max_edge_spill_region}\")\nRuntimeError: edge screen-colour spill region exceeds limit: max 70 pixels, limit 64",
+  "next_action": "Provide a clean swatch, foreground hint, or corrected source, then run a new delivery job.",
+  "updated_at": "2026-09-08T10:53:48.726247+00:00"
+}

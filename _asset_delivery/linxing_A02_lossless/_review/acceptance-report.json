@@ -1,0 +1,72 @@
+{
+  "status": "TECHNICAL_PASS_REQUIRES_VISUAL_REVIEW",
+  "source": "E:\\AI改编游戏\\换装斗地主\\角色五态包\\linxing\\linxing_A02_play_v1_chroma-despill.webm",
+  "source_display_frame_rate": "25/1",
+  "screen": {
+    "mode": "blue",
+    "rgb": "#39407C"
+  },
+  "canonical_canvas": "1920x1080",
+  "requested_additional_canvas": "2560x1440",
+  "layout_profile": null,
+  "role": null,
+  "keying": {
+    "feather_radius": 0.45,
+    "remove_enclosed_screen": false,
+    "global_screen_despill": true,
+    "edge_despill": true,
+    "lossless": true
+  },
+  "variants": [
+    {
+      "canvas": "1920x1080",
+      "layout": "auto",
+      "webm": "linxing_A02_play_v1_chroma-despill_1920x1080_transparent_vp9.webm",
+      "preview": "linxing_A02_play_v1_chroma-despill_1920x1080_quality-preview.png",
+      "validation": {
+        "frames": 50,
+        "alpha_packets": "50/50",
+        "transparent_pct": 36.118,
+        "opaque_pct": 1.981,
+        "antialias_pct": 61.9,
+        "edge_screen_spill_pixels": 7934,
+        "max_edge_screen_spill_pixels_per_frame": 204,
+        "max_edge_screen_spill_region_pixels": 19
+      }
+    },
+    {
+      "canvas": "2560x1440",
+      "layout": "source-preserving",
+      "webm": "linxing_A02_play_v1_chroma-despill_2560x1440_transparent_vp9.webm",
+      "preview": "linxing_A02_play_v1_chroma-despill_2560x1440_quality-preview.png",
+      "validation": {
+        "frames": 50,
+        "alpha_packets": "50/50",
+        "transparent_pct": 0.229,
+        "opaque_pct": 3.161,
+        "antialias_pct": 96.61,
+        "edge_screen_spill_pixels": 811,
+        "max_edge_screen_spill_pixels_per_frame": 32,
+        "max_edge_screen_spill_region_pixels": 4
+      }
+    }
+  ],
+  "review_required": [
+    "Inspect black, magenta, and white previews across the sampled full clip.",
+    "Reject visible colour blocks, screen-colour halos, holes, cropped silhouette, or changed role proportions.",
+    "Only run --approve after the preview is acceptable."
+  ],
+  "artifacts": {
+    "variants": [
+      {
+        "webm": "linxing_A02_play_v1_chroma-despill_1920x1080_transparent_vp9.webm",
+        "preview": "linxing_A02_play_v1_chroma-despill_1920x1080_quality-preview.png"
+      },
+      {
+        "webm": "linxing_A02_play_v1_chroma-despill_2560x1440_transparent_vp9.webm",
+        "preview": "linxing_A02_play_v1_chroma-despill_2560x1440_quality-preview.png"
+      }
+    ]
+  },
+  "generated_at": "2026-09-08T10:57:30.830600+00:00"
+}

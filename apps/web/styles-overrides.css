@@ -1,0 +1,520 @@
+/* Stage-two 1280×720 hand-fit safeguard: cards shrink so the full hand stays observable.
+   Horizontal scroll is intentionally kept as the last resort for unusually long hands. */
+@media (min-width: 1101px) and (max-width: 1320px) {
+  .card { flex-basis: 45px; height: 74px; padding: 6px; }
+  .card b { font-size: 16px; }
+  .card small { font-size: 17px; }
+  .hand .card + .card { margin-left: -13px; }
+}
+
+/* A small collection is a featured reward, not a few cards lost in empty space. */
+.gallery-grid.solo { grid-template-columns: minmax(400px, 640px); justify-content: center; }
+.gallery-grid.solo .pcard { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: center; padding: 18px; }
+.gallery-grid.solo .pcard-art { height: 300px; }
+.gallery-grid.solo .pcard-copy h2 { margin-top: 0; font-size: 24px; }
+.gallery-grid.solo .pcard-copy p { font-size: 14px; }
+.gallery-grid.solo .pcard.locked .pcard-art { height: 300px; }
+
+.replay-overlay { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 28px; background: #1c1737b5; backdrop-filter: blur(8px); overscroll-behavior: contain; }
+.card:disabled { cursor: not-allowed; opacity: .58; filter: saturate(.72); }
+.card:disabled:hover { transform: none; border-color: #d4ccdb; box-shadow: 0 3px 5px #302b441c; }
+.turn-wait { color: #655d7b; font-size: 12px; font-weight: 800; }
+.replay-card { width: min(560px, 100%); padding: 34px; border-radius: 28px; background: #fffaf7; text-align: center; box-shadow: 0 24px 80px #120d27a6; }
+.replay-card h2 { margin: 4px 0 16px; font-size: 30px; }
+.replay-card p { color: var(--muted); line-height: 1.7; }
+@keyframes replay-progress { to { transform: translateX(160%); } }
+@media (prefers-reduced-motion: reduce) { }
+
+.pal-avatar.with-action > img { opacity: 0; }
+.action-sprite { position: absolute; inset: 0; display: block; background-image: var(--action-sheet); background-position: var(--frame-x) var(--frame-y); background-repeat: no-repeat; background-size: 300% 200%; }
+.pal-avatar.with-video > img { opacity: 1; }
+.action-video { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; object-position: 56% center; background: transparent; }
+.pal-avatar.with-video .pal-caption { z-index: 3; }
+.settlement-action-video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 56% center; background: #080d16; }
+.settlement-video-modal .settlement-stage-head { position: absolute; z-index: 4; top: 0; right: 0; left: 0; padding: 24px 30px 48px; background: linear-gradient(180deg,#05080fd9,transparent); color: #fff9eb; text-align: left; pointer-events: none; }
+.settlement-video-modal .settlement-stage-head .eyebrow { margin: 0 0 5px; color: #e8c174; }
+.settlement-video-footer { position: absolute; z-index: 4; right: 0; bottom: 0; left: 0; display: flex; align-items: end; justify-content: space-between; gap: 18px; padding: 64px 28px 26px; background: linear-gradient(transparent,#04070eee 45%); color: #f3eadb; text-align: left; }
+.settlement-video-description { max-width: 390px; margin: 0; color: #f4edde !important; font-size: 13px !important; line-height: 1.55 !important; text-shadow: 0 2px 6px #000; }
+.settlement-video-footer .modal-actions { flex: none; margin: 0; }
+.settlement-video-footer .secondary { border-color: #f4d89599; background: #101724cc; color: #fff4d9; }
+.settlement-video-footer .secondary:hover { background: #29334a; }
+.performance-visual .pal-avatar.with-action { width: 210px; height: 230px; border-radius: 22px; background: transparent; box-shadow: none; }
+.performance-visual .pal-avatar.with-action .action-sprite { background-size: 300% 200%; }
+.performance-visual .pal-avatar.with-action .pal-caption { display: none; }
+
+/* Lounge visual system: scene-first game UI rather than a documentation-style page. */
+body { min-width: 1024px; background: #080c14; color: #f7f1e7; }
+.ambient { display: none; }
+.topbar { height: 68px; padding: 0 4.5vw; gap: 28px; border-bottom: 1px solid #d5ae6540; background: #090d17e6; color: #f7f1e7; box-shadow: 0 8px 28px #00000033; }
+.brand { color: #fff8e9; letter-spacing: .2px; }
+.brand span { color: #e6bb68; }
+.brand em { color: #e6bb68; }
+nav a, .secondary { color: #b9b6c6; }
+nav a:hover, nav a.active { background: #d7a74a24; color: #fff5da; }
+.top-token { border-color: #d6a34b8a; background: #211a0e; color: #f4ce7f; }
+
+.lounge-home { position: relative; isolation: isolate; min-height: calc(100vh - 68px); overflow: hidden; display: grid; place-items: center; padding: 72px 8vw 130px; background: #090d17 url('./assets/club-night-v2.png') center / cover no-repeat; }
+.lounge-scrim { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg,#080b14ef 0%,#080b1499 35%,#080b142e 68%,#080b14cc 100%), linear-gradient(0deg,#080b14e8 0%,transparent 42%); }
+.lounge-kicker { position: absolute; top: 34px; left: 8vw; margin: 0; color: #e5bb6b; font-size: 11px; font-weight: 900; letter-spacing: 2.4px; }
+.lounge-copy { z-index: 2; width: min(510px, 46vw); text-align: center; text-shadow: 0 3px 18px #000; }
+.lounge-copy .eyebrow { color: #d8bd87; }
+.lounge-copy h1 { margin: 0 0 20px; color: #fffaf0; font-size: clamp(48px,5vw,76px); line-height: .98; letter-spacing: -4px; text-wrap: balance; }
+.lounge-copy h1 span { color: #e6b65c; }
+.lounge-copy > p:not(.eyebrow):not(.guard) { margin: 0 auto; color: #d8d2c8; font-size: 16px; line-height: 1.8; max-width: 440px; }
+.hero-actions { justify-content: center; }
+.lounge-cta { min-width: 210px; border: 1px solid #f5d389aa; background: linear-gradient(135deg,#d89b3d,#9f542b); box-shadow: 0 14px 32px #00000070, inset 0 1px #fff1bd88; }
+.lounge-secondary { border-color: #d5ae6566; background: #121724b8; color: #f4e8d4; }
+.lounge-copy .guard { color: #b5ad9f; }
+.lounge-character { position: absolute; z-index: 1; bottom: 118px; filter: drop-shadow(0 25px 34px #000000b0); }
+.lounge-character.left { left: max(5vw, 48px); transform: rotate(-5deg); }
+.lounge-character.right { right: max(5vw, 48px); transform: rotate(5deg); }
+.lounge-pal { width: clamp(150px, 16vw, 245px); height: clamp(230px, 25vw, 360px); border: 2px solid #ebc779aa; border-radius: 32px 32px 16px 16px; background: #151425; box-shadow: inset 0 0 0 4px #080b1499, 0 18px 42px #00000088; }
+.lounge-pal .pal-caption { padding-bottom: 10px; padding-top: 38px; }
+.lounge-pal .pal-caption strong { font-size: 19px; }
+.lounge-pal .pal-caption i { font-size: 9px; }
+.lounge-brief { position: absolute; right: 8vw; bottom: 28px; left: 8vw; z-index: 2; display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid #ddba7350; background: #080b1499; backdrop-filter: blur(10px); }
+.lounge-brief div { display: flex; align-items: center; justify-content: center; gap: 11px; padding: 16px; color: #dfd6c8; font-size: 12px; font-weight: 800; }
+.lounge-brief b { color: #e6b65c; font-size: 17px; }
+
+.table-page { max-width: 1480px; grid-template-columns: minmax(0,1fr); gap: 14px; padding: 18px 4vw 28px; }
+.table-side { display: grid; grid-template-columns: auto auto minmax(260px,1fr); align-items: center; column-gap: 18px; padding: 0 6px; }
+.round-tag { margin: 0; color: #e4b968; font-size: 11px; letter-spacing: 1.3px; }
+.table-side h1 { margin: 0; color: #fff8eb; font-size: 28px; letter-spacing: -1.6px; }
+.table-side p { margin: 0; color: #bcb6ad; font-size: 13px; }
+.table-felt { height: min(50vw, 570px); min-height: 440px; border: 1px solid #e2ba6eaa; border-radius: 28px; background: linear-gradient(180deg,#06111c72,#06101860), url('./assets/club-night-v2.png') center 56% / cover no-repeat; box-shadow: inset 0 0 0 8px #090e18a8, inset 0 0 0 10px #d0a35670, 0 22px 48px #00000070; }
+.table-felt:after { border-color: #eec76a42; width: 300px; height: 300px; left: calc(50% - 150px); top: calc(50% - 130px); }
+.match-hud { position: absolute; z-index: 4; top: 18px; left: 50%; display: flex; align-items: center; gap: 14px; transform: translateX(-50%); padding: 7px 13px; border: 1px solid #e4bd6e80; border-radius: 999px; background: #0b101ccc; color: #cdc6bb; font-size: 10px; white-space: nowrap; backdrop-filter: blur(8px); }
+.match-hud b { color: #f2ca77; font-size: 11px; }
+.felt-label { top: 44%; color: #f4d98d24; font-size: 28px; }
+.opponent { font-size: 12px; }
+/* Seat geometry is owned by the "round 4" block at the end of this file. */
+.opponent.top { top: 62px; }
+.opponent.right { right: 38px; top: 47%; }
+.opponent.left { left: 38px; top: 57%; }
+.opponent .pal-avatar { border: 1px solid #e9ca8d90; box-shadow: inset 0 0 0 2px #090d17aa, 0 8px 20px #00000088; }
+/* The bubble is a child of the seat's flex row, so `left: calc(100% + 8px)` measured from
+   the *row* rather than from the standee. Once the row grew wide (standee + role chip +
+   back-cards), the bubble detached from the character it belongs to. Anchoring it to the
+   standee instead keeps the tail next to the speaker's head at every seat.
+
+   Vertical placement also matters: linxing sits at the table's top edge, so her bubble
+   must hang *below* her head (toward the felt centre) or it reads as belonging to nothing.
+   Mia sits mid-right, so hers floats level with the head. Both then sit on the same side
+   of the table centre as that player's played cards, which is what makes "who played
+   this?" legible at a glance. */
+.opponent .pal-standee { position: relative; }
+.pal-bubble { position: absolute; top: -7px; left: calc(100% + 8px); width: max-content; max-width: 170px; margin: 0; padding: 7px 10px; border: 1px solid #f2d89966; border-radius: 12px 12px 12px 2px; background: #101725e8; color: #f2eee6; font-size: 11px; line-height: 1.35; box-shadow: 0 8px 18px #00000055; }
+.opponent.top .pal-bubble { top: auto; bottom: -34px; left: 50%; transform: translateX(-50%); border-radius: 12px 12px 12px 2px; }
+.opponent.right .pal-bubble { right: calc(100% + 8px); left: auto; border-radius: 12px 12px 2px; }
+.play-stage { position: absolute; z-index: 4; inset: 0; pointer-events: none; }
+.played-stack { position: absolute; display: grid; justify-items: center; min-width: 112px; color: #fbf2de; text-align: center; filter: drop-shadow(0 10px 13px #00000080); }
+.played-stack p,.played-stack>b { margin: 0; border: 1px solid #e8be6e62; background: #0a1019df; color: #eed8a3; font-size: 10px; font-weight: 800; line-height: 1; white-space: nowrap; }
+.played-stack p { padding: 6px 10px; border-radius: 999px; }
+.played-stack>b { margin-top: 5px; padding: 5px 9px; border-radius: 7px; color: #fff8e9; }
+.table-card-fan { display: flex; align-items: flex-end; min-height: 85px; padding: 7px 9px 2px; }
+.table-card { display: grid; width: 57px; height: 78px; margin-left: -18px; padding: 8px 7px; border: 1px solid #d6c6a6; border-radius: 7px; background: linear-gradient(145deg,#fffef9,#e8dcc9); box-shadow: 0 7px 13px #00000077; color: #292435; text-align: left; transform: rotate(-2deg); }
+.table-card:first-child { margin-left: 0; }
+.table-card:nth-child(even) { transform: translateY(-2px) rotate(2deg); }
+.table-card b { font-size: 20px; line-height: .95; }
+.table-card small { margin-top: 3px; font-size: 24px; line-height: .9; }
+.table-card.red { color: #c84958; }
+/* Played-card placement lives in the "round 4: one shared table coordinate system" block
+   near the end of this file. It was originally duplicated here with hard-coded
+   top/left/right values, which silently shadowed the anchored version — do not reintroduce
+   per-seat coordinates here. */
+.lead-marker { position: absolute; top: 48%; left: 50%; transform: translate(-50%,-50%); padding: 9px 14px; border: 1px solid #f1cc7f99; border-radius: 999px; background: #0b111be8; color: #d8c7a6; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.turn-dock { position: absolute; top: 60%; left: 50%; transform: translateX(-50%); padding: 7px 12px; border-radius: 999px; background: #0c1320d9; color: #d7d0c4; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.turn-dock.active { border: 1px solid #e8bb665c; color: #ffd780; }
+.self-seat { position: absolute; z-index: 3; right: 50%; bottom: 14px; transform: translateX(50%); color: #e5dac6; font-size: 11px; font-weight: 800; letter-spacing: .3px; }
+.hand-wrap { margin-top: 12px; border-color: #d3b06c55; background: linear-gradient(180deg,#151d2bea,#0d131ff5); box-shadow: 0 14px 32px #00000070; }
+.hand-header { color: #f2ebde; }
+.hand-header b { background: #3b2b18; color: #f2c972; }
+.hand-wrap .secondary { border-color: #d8b36f88; background: #161d2a; color: #f0d49a; }
+.hand-wrap .secondary:hover { background: #2a2630; color: #fff3d6; }
+.hand-wrap .primary { border: 1px solid #f1cd7d88; background: linear-gradient(135deg,#d79a3e,#9e562d); box-shadow: 0 8px 18px #00000066; }
+.turn-wait { color: #e2bd75; }
+/* ===== entry cinematic: one character at a time, full-bleed ===== */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.entry-cinematic { position: fixed; z-index: 50; inset: 0; overflow: hidden; background: #04060c; overscroll-behavior: contain; }
+.entry-cinematic video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0; transition: opacity .7s ease; background: #04060c; }
+.entry-cinematic video[data-entry-primary], .entry-cinematic video.show { opacity: 1; }
+.entry-cinematic::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, #04060c66 0%, transparent 22%, transparent 62%, #04060cd9 100%); }
+.entry-kicker { position: absolute; z-index: 2; top: max(26px, env(safe-area-inset-top)); left: 0; right: 0; margin: 0; text-align: center; color: #e8ba63; font-size: 12px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; text-shadow: 0 2px 12px #000; }
+.entry-caption { position: absolute; z-index: 2; left: clamp(24px, 6vw, 72px); bottom: clamp(28px, 7vh, 64px); color: #fff7e7; }
+.entry-caption b { display: block; font-size: clamp(30px, 4.6vw, 52px); font-weight: 900; letter-spacing: 2px; text-shadow: 0 4px 22px #000000cc; }
+.entry-caption span { display: block; margin-top: 6px; color: #f0cf8e; font-size: 13px; font-weight: 800; letter-spacing: 2.4px; text-shadow: 0 2px 10px #000; }
+.entry-skip { position: absolute; z-index: 2; top: max(20px, env(safe-area-inset-top)); right: clamp(18px, 3vw, 36px); padding: 8px 16px; border: 1px solid #d9b46b55; border-radius: 999px; background: #0b111d99; color: #e8cfa0; font-size: 12px; font-weight: 800; letter-spacing: 1px; cursor: pointer; backdrop-filter: blur(6px); }
+.entry-skip:hover { border-color: #f1cd7d; color: #fff3d6; }
+.card { border-color: #cec6b9; background: linear-gradient(145deg,#fffef8,#e9e2d6); box-shadow: 0 4px 10px #00000066; }
+.card:hover,.card.selected { border-color: #e4b454; box-shadow: 0 10px 20px #00000088; }
+
+/* ---- hand fan: overlap is carried by the buttons themselves, so hit-targets stay disjoint.
+   `justify-content: flex-start` is required — without it the overflowing flex row re-centres
+   and steals the leftmost card's hit area. The hand scrolls, so the row can afford to be wider. */
+.hand { justify-content: flex-start; }
+.hand .card { margin-right: 0; }
+.hand .card + .card { margin-left: -18px; }
+.hand .card:hover, .hand .card.selected { z-index: 2; }
+.hand .card:focus-visible { z-index: 3; }
+.event-feed { display: grid; grid-template-columns: 112px repeat(4,minmax(0,1fr)); gap: 0 14px; max-height: none; overflow: hidden; padding: 12px 16px; border: 1px solid #d6b66c36; border-radius: 14px; background: #0d131fe6; }
+.event-feed h2 { grid-row: span 1; align-self: center; margin: 0; color: #e8c174; font-size: 13px; }
+.event { min-width: 0; padding: 4px 12px; border-bottom: 0; border-left: 1px solid #d6b66c2c; }
+.event p { overflow: hidden; margin-top: 3px; color: #c5c0b8; font-size: 11px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 1240px) { .lounge-character { opacity: .72; } .lounge-character.left { left: 24px; } .lounge-character.right { right: 24px; } .table-side { grid-template-columns: auto 1fr; row-gap: 8px; } .table-side p { grid-column: 2; } .table-felt { height: 520px; } }
+
+/* ===== layered pal standee (table & lounge) ===== */
+.pal-standee { overflow: hidden; }
+.pal-standee .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 56% center; }
+.pal-standee .layer-base { position: relative; }
+/* Table-seat sizing lives in the "round 4" block at the end of this file, expressed in
+   felt-relative units. Sizing it here as well made a short felt crop the characters
+   instead of shrinking them — keep this selector out of the file. */
+.lounge-pal.pal-standee { width: 230px; height: 306px; border-radius: 34px 34px 20px 20px; }
+.pal-standee .pal-caption { position: absolute; z-index: 3; right: 0; bottom: 0; left: 0; }
+
+/* ===== live dress-up settlement stage ===== */
+.dressup-modal { width: min(980px, calc(100vw - 48px)); padding: 0; overflow: hidden; border-radius: 20px; background: transparent; box-shadow: 0 28px 100px #000000aa; }
+.dressup-stage { position: relative; min-height: min(560px, 76vh); border: 1px solid #f0d18a55; border-radius: inherit; background: #05080f; display: grid; place-items: center; overflow: hidden; }
+.dressup-stage.plain { min-height: 300px; padding: 56px 40px 88px; text-align: center; align-content: center; }
+.dressup-stage .settlement-action-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; background: #05080f; }
+.dressup-spotlight { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 55% at 50% 30%, #f5d78c2e, transparent 70%), radial-gradient(ellipse 90% 80% at 50% 110%, #7dd3fc14, transparent 60%); pointer-events: none; }
+.dressup-figure { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; border-radius: 0; overflow: hidden; box-shadow: none; }
+.dressup-figure .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; }
+.dressup-figure .layer-base { filter: brightness(.42) saturate(.5) blur(3px); transform: scale(1.05); }
+.dressup-figure .band-1 { clip-path: inset(0 0 66.2% 0); -webkit-mask-image: linear-gradient(180deg, #000 74%, transparent 100%); mask-image: linear-gradient(180deg, #000 74%, transparent 100%); }
+.dressup-figure .band-2 { clip-path: inset(33.2% 0 33.2% 0); -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 26%, #000 74%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 26%, #000 74%, transparent 100%); }
+.dressup-figure .band-3 { clip-path: inset(66.2% 0 0 0); -webkit-mask-image: linear-gradient(0deg, #000 74%, transparent 100%); mask-image: linear-gradient(0deg, #000 74%, transparent 100%); }
+.dressup-figure .layer-fx { opacity: 0; }
+.dressup-figure.assembled .layer-fx { opacity: 1; }
+.dressup-figure.autoplay { animation: figure-drift 16s ease-in-out 2.4s infinite alternate; }
+.dressup-figure.autoplay .band-1 { animation: band-reveal .9s .3s cubic-bezier(.22,.9,.32,1) both; }
+.dressup-figure.autoplay .band-2 { animation: band-reveal .9s .85s cubic-bezier(.22,.9,.32,1) both; }
+.dressup-figure.autoplay .band-3 { animation: band-reveal .9s 1.4s cubic-bezier(.22,.9,.32,1) both; }
+.dressup-figure.autoplay .layer-fx { animation: fx-fade 1.1s 2s both; }
+.dressup-figure.autoplay::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, #fff4d82b 46%, #fff8e172 50%, #fff4d82b 54%, transparent 60%); background-size: 300% 100%; animation: shimmer-sweep 2.2s .5s both; pointer-events: none; }
+@keyframes band-reveal { 0% { opacity: 0; filter: blur(22px) brightness(2.4); transform: translateY(-3%) scale(1.03); } 55% { opacity: 1; } 100% { opacity: 1; filter: blur(0) brightness(1); transform: none; } }
+@keyframes figure-drift { from { transform: scale(1); } to { transform: scale(1.06); } }
+@keyframes fx-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shimmer-sweep { from { background-position: 180% 0; } to { background-position: -120% 0; } }
+.dressup-modal .settlement-stage-head { position: absolute; z-index: 4; top: 0; right: 0; left: 0; padding: 24px 30px 48px; background: linear-gradient(180deg,#05080fd9,transparent); color: #fff9eb; text-align: left; pointer-events: none; }
+.dressup-modal .settlement-stage-head .eyebrow { margin: 0 0 5px; color: #e8c174; }
+.dressup-modal h2 { margin: 0; color: #fffaf0; font-size: clamp(26px,3vw,40px); line-height: 1.08; letter-spacing: -1.2px; text-shadow: 0 3px 14px #000; }
+.dressup-modal .settlement-video-footer { position: absolute; z-index: 4; right: 0; bottom: 0; left: 0; display: flex; align-items: end; justify-content: space-between; gap: 18px; padding: 64px 28px 26px; background: linear-gradient(transparent,#04070eee 45%); color: #f3eadb; text-align: left; }
+.dressup-modal .settlement-video-description { max-width: 390px; margin: 0; color: #f4edde !important; font-size: 13px !important; line-height: 1.55 !important; text-shadow: 0 2px 6px #000; }
+.dressup-modal .settlement-video-footer .modal-actions { flex: none; margin: 0; }
+.photo-card-reveal { position: relative; margin: 64px 0 92px; width: min(300px, 40%); }
+.photo-card-reveal .pcard-art { aspect-ratio: 3 / 4; }
+
+/* ===== gallery: collection book ===== */
+.gallery-head { display: flex; align-items: end; justify-content: space-between; gap: 28px; }
+.collection-progress { min-width: 240px; text-align: right; }
+.collection-progress b { font-size: 30px; letter-spacing: -1px; }
+.collection-progress span { display: block; color: var(--muted); font-size: 12px; font-weight: 700; }
+.collection-progress .points { color: #b8860b; margin-top: 4px; }
+.progress-track { height: 7px; margin-top: 8px; border-radius: 999px; background: #e8e1f3; overflow: hidden; }
+.progress-track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--violet), var(--pink)); transition: width .5s ease; }
+.gallery-filters { display: flex; align-items: center; gap: 8px; margin-top: 22px; }
+.filter-gap { flex: 1; }
+.chip { border: 1px solid #d9d2e8; background: #fff; color: #4d466d; border-radius: 999px; padding: 7px 16px; font-size: 13px; font-weight: 800; cursor: pointer; transition: all .18s ease; }
+.chip:hover { border-color: var(--violet); color: var(--violet); }
+.chip.active { background: #35295b; border-color: #35295b; color: #fff; }
+.gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.pcard { position: relative; cursor: pointer; border-radius: 16px; transition: transform .18s ease, box-shadow .18s ease; outline-offset: 3px; }
+.pcard:hover { transform: translateY(-8px); }
+.pcard:focus-visible { outline: 3px solid var(--violet); }
+.pcard-art { position: relative; aspect-ratio: 3 / 4; border-radius: 14px; overflow: hidden; background: #141a2e; box-shadow: 0 10px 26px #20183a33; }
+.pcard-art .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pcard-frame { position: absolute; inset: 0; border: 3px solid #c9b8df; border-radius: inherit; pointer-events: none; }
+.pcard-art.first .pcard-frame { border-color: #f5d78c; }
+.pcard-art.first::before { content: ""; position: absolute; inset: 0; z-index: 2; background: linear-gradient(115deg, transparent 35%, #f5d78c40 50%, transparent 65%); background-size: 240% 100%; animation: foil-shimmer 3.2s ease-in-out infinite; pointer-events: none; }
+@keyframes foil-shimmer { 0% { background-position: 190% 0; } 55% { background-position: -90% 0; } 100% { background-position: -90% 0; } }
+.pcard-serial { position: absolute; left: 8px; bottom: 6px; z-index: 3; font-size: 10px; font-weight: 800; color: #fff8e9cc; text-shadow: 0 1px 3px #000; letter-spacing: .6px; }
+.pcard-lv { position: absolute; right: 8px; top: 7px; z-index: 3; padding: 2px 8px; border-radius: 999px; background: #05080fb8; border: 1px solid #f5d78c88; color: #f6dc9f; font-size: 10px; font-weight: 900; }
+/* upgrade levels — cosmetic only (Marvel Snap pattern) */
+.pcard-art.lv2 .pcard-frame { border-color: #7dd3fc; }
+.pcard-art.lv2 .layer-outfit { transform: scale(1.05); transform-origin: 50% 100%; }
+.pcard-art.lv3 .pcard-frame { border-color: #b79df5; }
+.pcard-art.lv3:hover .layer-outfit { transform: translate(-3px, -3px) scale(1.04); transition: transform .25s ease; }
+.pcard-art.lv3:hover .layer-fx { transform: translate(4px, 4px) scale(1.06); transition: transform .25s ease; }
+.pcard-art.lv4 .pcard-frame { border-color: #ff9ec7; }
+.pcard-art.lv4 .layer-fx { animation: fx-pulse 2.4s ease-in-out infinite; }
+@keyframes fx-pulse { 0%, 100% { opacity: .55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+.pcard-art.lv5 .pcard-frame { border-color: transparent; }
+.pcard-art.lv5::after { content: ""; position: absolute; inset: -3px; z-index: 4; border-radius: 16px; padding: 3px; background: conic-gradient(from 0deg, #f5d78c, #ff9ec7, #7dd3fc, #b79df5, #f5d78c); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: border-spin 3.6s linear infinite; pointer-events: none; }
+@keyframes border-spin { to { transform: rotate(1turn); } }
+.pcard.is-new .pcard-art { box-shadow: 0 0 0 3px #7dd3fc, 0 10px 30px #7dd3fc55; animation: new-glow 1.8s ease-in-out infinite; }
+@keyframes new-glow { 0%, 100% { box-shadow: 0 0 0 3px #7dd3fc, 0 10px 30px #7dd3fc55; } 50% { box-shadow: 0 0 0 5px #7dd3fc88, 0 10px 34px #7dd3fc88; } }
+.pcard-new { position: absolute; top: -9px; right: -7px; z-index: 5; padding: 3px 10px; border-radius: 999px; background: #1f6feb; color: #fff; font-size: 11px; font-weight: 900; box-shadow: 0 4px 10px #1f6feb66; }
+.pcard.locked { cursor: not-allowed; }
+.pcard.locked .pcard-art { filter: saturate(.35); }
+.pcard.locked .pcard-frame { border-style: dashed; border-color: #b9b2cc; }
+.pcard-copy { padding: 10px 4px 0; }
+.pcard-copy h2 { margin: 0; font-size: 15px; letter-spacing: -.2px; }
+.pcard-copy p { margin: 3px 0 0; color: var(--muted); font-size: 12px; font-weight: 700; }
+
+/* ===== card detail modal ===== */
+.card-detail { position: fixed; inset: 0; z-index: 70; display: grid; grid-template-columns: auto minmax(240px, 320px) minmax(300px, 420px) auto; align-items: center; justify-content: center; gap: 26px; padding: 30px; background: #14102bd9; backdrop-filter: blur(10px); overscroll-behavior: contain; }
+.detail-card .pcard-art { width: 100%; aspect-ratio: 3 / 4; }
+.detail-info { color: #f3eadb; }
+.detail-info .eyebrow { color: #e8c174; }
+.detail-info h2 { margin: 0 0 16px; font-size: 26px; letter-spacing: -.6px; color: #fffaf0; }
+.detail-info dl { display: grid; gap: 9px; margin: 0 0 20px; }
+.detail-info dl div { display: flex; gap: 12px; font-size: 13px; }
+.detail-info dt { flex: none; width: 52px; color: #b8a9d9; font-weight: 800; }
+.detail-info dd { margin: 0; color: #f4edde; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+.detail-hint { margin-top: 14px; color: #8f83b3; font-size: 11px; }
+.detail-nav { width: 46px; height: 46px; border-radius: 50%; border: 1px solid #f0d18a55; background: #0a1019bb; color: #f6dc9f; font-size: 24px; cursor: pointer; }
+.detail-nav:disabled { opacity: .3; cursor: default; }
+.detail-nav:not(:disabled):hover { background: #f0d18a33; }
+
+/* ===== replay overlay (dress-up): full-bleed cinematic ===== */
+.replay-overlay { padding: 0; background: #04060c; backdrop-filter: none; }
+.dressup-replay { position: fixed; inset: 0; width: 100%; background: #04060c; color: #f3eadb; padding: 0; }
+.dressup-stage.inline { position: absolute; inset: 0; min-height: 0; border: 0; border-radius: 0; margin: 0; }
+.replay-head { position: absolute; z-index: 5; top: 0; right: 0; left: 0; padding: 28px 34px 60px; background: linear-gradient(180deg, #04060cd9, transparent); pointer-events: none; }
+.replay-head .eyebrow { margin: 0 0 6px; color: #e8c174; letter-spacing: 3px; }
+.replay-head h2 { margin: 0; color: #fffaf0; font-size: clamp(30px, 4vw, 46px); letter-spacing: -1px; text-shadow: 0 4px 18px #000; }
+.replay-footer { position: absolute; z-index: 5; right: 0; bottom: 0; left: 0; padding: 80px 34px 30px; background: linear-gradient(transparent, #04060cd9 60%); pointer-events: none; }
+.replay-footer p { margin: 0; color: #f4edde; font-size: 13px; text-shadow: 0 2px 6px #000; }
+.replay-close { position: absolute; z-index: 6; top: max(22px, env(safe-area-inset-top)); right: clamp(20px, 3vw, 38px); border-radius: 999px; background: #0b111dcc; backdrop-filter: blur(6px); }
+
+/* ===== gallery nav badge & fly animation ===== */
+.topbar nav a { position: relative; }
+.topbar nav a.has-badge::after { content: attr(data-badge); position: absolute; top: -7px; right: -13px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: #1f6feb; color: #fff; font-size: 10px; font-weight: 900; display: grid; place-items: center; }
+.fly-ghost { border-radius: 14px; overflow: hidden; box-shadow: 0 18px 60px #00000099; }
+
+/* ===== reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  .dressup-figure.autoplay .band, .dressup-figure.autoplay .layer-fx, .dressup-figure.autoplay::after { animation: none; }
+  .dressup-figure.autoplay .layer-fx { opacity: 1; }
+  .pcard:hover, .pcard-art.lv3:hover .layer-outfit, .pcard-art.lv3:hover .layer-fx { transform: none; }
+  .pcard-art.first::before, .pcard-art.lv4 .layer-fx, .pcard-art.lv5::after, .pcard.is-new .pcard-art { animation: none; }
+}
+
+/* ===== transparent cutout standee: the figure stands on the scene, no card frame ===== */
+.pal-standee.cutout { overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.pal-standee.cutout .layer { object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 16px 18px rgba(0, 0, 0, .58)); }
+.opponent .pal-standee.cutout { border: 0; box-shadow: none; }
+.lounge-pal.pal-standee.cutout { width: 300px; height: 375px; border: 0; box-shadow: none; }
+.pal-standee.cutout .pal-caption { padding: 0 0 2px; background: none; text-shadow: 0 2px 7px #000, 0 0 3px #000; }
+.pal-standee.cutout .action-video { border-radius: 18px; box-shadow: 0 14px 34px rgba(0, 0, 0, .6); }
+.pal-standee.cutout.with-video > img.layer { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .pal-standee.cutout .layer { filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .5)); } }
+
+/* ===== round 3 overhaul: bigger table opponents, adaptive felt, unblocked replay text, dark gallery/workshop ===== */
+
+/* opponents read as seated players, not avatars */
+.opponent.right { right: 26px; top: 40%; }
+.opponent.left { left: 26px; top: 50%; }
+.opponent { align-items: flex-end; gap: 12px; }
+.opponent > div:not([class]) { padding: 7px 11px; border: 1px solid #e4bd6e66; border-radius: 10px; background: #0b111ecc; backdrop-filter: blur(6px); }
+.opponent > div:not([class]) b { font-size: 13px; }
+.opponent .back-cards { font-size: 20px; align-self: center; }
+.pal-bubble { max-width: 220px; font-size: 12px; padding: 8px 12px; }
+
+/* ---- topbar runtime controls: pacing + audio ---- */
+.top-controls { display: flex; gap: 8px; margin-left: auto; }
+.ctl-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border: 1px solid #d5ae6555; border-radius: 999px; background: #101728; color: #f0e6d2; font-size: 12px; font-weight: 800; letter-spacing: .4px; cursor: pointer; transition: border-color .18s, background .18s, color .18s; }
+.ctl-btn:hover { border-color: #e4bd6eaa; background: #1a2336; color: #fff8e9; }
+.ctl-btn:focus-visible { outline: 2px solid #eec76a; outline-offset: 2px; }
+.ctl-btn i { font-style: normal; opacity: .75; }
+.ctl-btn.off { border-color: #ffffff22; background: #0d131ff5; color: #8d8b96; }
+.top-token { margin-left: 0; }
+
+/* Felt height tracks the viewport so nothing is pushed off-screen.
+   Derived from measured geometry (1440×900, verified pixel-exact):
+     scrollHeight = 68 topbar + 18/28 page padding + 60 .table-side
+                  + 14×2 grid gaps + 52 .event-feed
+                  + 12 .hand-wrap margin-top
+                  + handWrap, where handWrap = hand + 77 (2 border + 28 padding + 35 header + 12 header gap)
+                  = 266 + hand + 77 + felt
+   Solving scrollHeight = 100dvh gives felt = 100dvh - 343 - hand, and .hand is
+   clamp(96px, 12dvh, 115px) — both sides share one clamp expression, so the two
+   cannot drift out of sync the way the old hard-coded 330px did.
+
+   The 60px `.table-side` term is reserved explicitly below. It is not decorative: at short
+   viewports that column's round-tag + h1 + copy wrap onto extra lines and grow from 30px to
+   60px, which is exactly where the old 129px overflow at 1080×620 came from. Pinning the
+   band makes the arithmetic viewport-independent.
+
+   The 360px floor is set by the seats, not by taste: linxing is a 295px cutout anchored at
+   top:40px, so anything under ~350px crops her head. Below this floor the felt simply
+   cannot seat two characters plus the play band, and the page scrolls rather than
+   silently mangling the table. */
+.table-page > .table-side { min-height: 60px; }
+.table-felt {
+  height: clamp(360px, calc(100dvh - 343px - clamp(96px, 12dvh, 115px)), 720px);
+  min-height: 0;
+}
+.dressup-modal { max-height: calc(100dvh - 40px); }
+
+/* replay: title sits low-left over the scrim, face stays clear up top */
+.replay-head { position: absolute; z-index: 5; top: auto; right: 0; bottom: 54px; left: 0; padding: 0 clamp(24px, 4vw, 44px); background: none; pointer-events: none; }
+.replay-head .eyebrow { margin: 0 0 5px; color: #e8c174; letter-spacing: 3px; }
+.replay-head h2 { font-size: clamp(28px, 3.6vw, 42px); }
+.replay-footer { z-index: 4; padding: 130px clamp(24px, 4vw, 44px) 24px; background: linear-gradient(transparent, #04060cd9 62%); }
+
+/* gallery: dark casino theme */
+.gallery h1 { color: #fff8eb; }
+.gallery .eyebrow { color: #e8c174; }
+.gallery-head > div > p { color: #bcb6ad; }
+.collection-progress b { color: #fff4d6; }
+.collection-progress span { color: #b0a692; }
+.progress-track { background: #1c2431; }
+.chip { border-color: #d3b06c55; background: #131a26; color: #d8cfbe; }
+.chip:hover { border-color: #f0c778; color: #ffe9bd; }
+.chip.active { background: #f0c778; border-color: #f0c778; color: #241a08; }
+.pcard-copy h2 { color: #f5eee0; }
+.pcard-copy p { color: #9d9484; }
+.gallery .empty-line { color: #9d9484; }
+.gallery-grid.solo .photo-card { background: #101725; border-color: #d3b06c44; }
+.gallery-grid.solo .photo-copy h2, .gallery-grid.solo .photo-copy p { color: #f5eee0; }
+
+/* workshop: dark casino theme */
+.workshop-intro h1 { color: #fff8eb; }
+.workshop-intro .eyebrow { color: #e8c174; }
+.workshop-intro p { color: #bcb6ad; }
+.workshop-intro li { border-bottom-color: #d3b06c33; color: #cfc6b6; }
+.generator { background: #101725; border: 1px solid #d3b06c55; box-shadow: 0 18px 44px #00000066; }
+.generator textarea { background: #0a101b; color: #f4edde; border: 1px solid #d3b06c44; }
+.generator .form-note { color: #b0a692; }
+.field-error { color: #ff9fb4; }
+.version-chain { background: #0d131f; border-color: #d3b06c44; }
+.version-chain h2 { color: #fff4d6; }
+.candidate { border-top-color: #d3b06c33; }
+.candidate b { color: #f5eee0; }
+.candidate p, .candidate small { color: #9d9484; }
+.workshop .empty-line { color: #9d9484; }
+
+/* inspector: dark casino theme */
+.inspector h1 { color: #fff8eb; }
+.inspector .eyebrow { color: #e8c174; }
+.inspector > div > p { color: #bcb6ad; }
+.inspector pre { background: #0d131f; border: 1px solid #d3b06c44; }
+
+/* round 3 fit fixes: opponents clear of the play zone, info chips aligned, mia not clipped */
+.opponent { align-items: center; }
+.opponent.right { right: 26px; top: 29%; }
+.opponent.left { left: 26px; top: 42%; }
+.lead-marker { top: 63%; }
+.turn-dock { top: 74%; }
+
+/* ===== round 4: one shared table coordinate system for seats + played cards =====
+   Before this block, seats and played-card anchors were two unrelated sets of magic
+   numbers: `.opponent.*` used edge percentages while `.from-*` hard-coded its own
+   left/right/top. Moving a seat never moved that player's played cards, and
+   `.from-pal-linxing { top: 296px }` sat 14px inside a 310px felt floor — a guaranteed
+   overflow. Both are now derived from the same three anchor positions below.
+
+   Layout contract (all values are % of .table-felt, which is position:relative):
+     - 上家 linxing  : horizontally centred, top edge
+     - 下家 mia      : right edge
+     - 玩家 player   : left edge  (the short end of the felt, opposite .self-seat)
+   Played cards land at the midpoint between the player who played them and the table
+   centre, so "who played this" is readable without consulting the label.
+
+   The standee keeps a fixed pixel size on purpose: `.opponent.right` anchors the box's
+   right edge, so a percentage width resolves against the *felt* rather than the box and
+   lets a wide flex row spill out the wrong side — that is what flipped mia onto the left
+   edge during development. The felt floor is raised instead, so the seats always have
+   room for their fixed size.
+
+   `.opponent.top` centres its *flex row*, not the character: the row also holds the role
+   chip and the back-cards, so translateX(-50%) left the standee left of true centre.
+   Measured at 1440×900: row 341px = standee 236 + gap 12 + chip 76 + gap 12 + back-cards 5.
+   The standee therefore sits (76+12+5+12)/2 = 52.5px left of centre, so the row shifts
+   right by exactly that. Do not guess this number — the back-cards collapse to ~5px wide
+   at some font metrics, which makes hand-tuned values overshoot. */
+
+.opponent .pal-standee { width: 216px; height: 270px; }
+.opponent .pal-standee.cutout { width: 236px; height: 295px; }
+.opponent.top { top: 40px; transform: translateX(calc(-50% + 52.5px)); }
+
+/* Short viewports: below ~420px of felt the fixed 295px standee plus the 3-row play block
+   cannot both fit, which is what produced the seat/stack overlap at 1024x720-1366x768.
+   Shrinking the seats here is the only honest fix — the alternative is cropping a
+   character. 400px is the measured felt height at 1280x720, the stated minimum support. */
+@media (max-height: 780px) {
+  .opponent .pal-standee { width: 176px; height: 220px; }
+  .opponent .pal-standee.cutout { width: 192px; height: 240px; }
+  .opponent.top { top: 34px; transform: translateX(calc(-50% + 43px)); }
+  .opponent.right { top: 24%; }
+  .opponent.left { top: 36%; }
+  .played-stack { --seat-inset: 14%; min-width: 92px; }
+  .from-pal-linxing { top: calc(50% - var(--seat-inset) + 4%); left: calc(50% + 43px); }
+  .from-pal-mia { top: calc(50% - 4%); left: calc(50% + 15%); }
+  .from-player { top: calc(50% + 14%); left: 27%; }
+
+  /* The seats are now 240px, so the felt can be shorter without cropping them. Lowering
+     the floor here is what removes the scroll bar at 1280x720 and 1366x768 — the felt
+     clamp still governs the height, this only relaxes its minimum. */
+  .table-page > .table-side { min-height: 30px; }
+  .table-felt { height: clamp(300px, calc(100dvh - 313px - clamp(96px, 12dvh, 115px)), 720px); }
+  .lead-marker { top: 68%; }
+  /* The dock is centred horizontally, which is exactly where linxing's caption sits on a
+     short felt. Moving it to the lower-left puts it beside .self-seat instead of on top of
+     her caption — both stay readable. */
+  .turn-dock { top: auto; bottom: 6px; left: 25%; transform: translateX(-50%); }
+  .self-seat { right: 25%; bottom: 6px; }
+  .opponent .pal-caption { padding-top: 12px; }
+}
+
+/* One anchor per seat, expressed as "walk from the table centre toward the seat".
+   Each stack is centred with translate(-50%,-50%), so the value below is the stack's
+   CENTRE, not its top-left.
+
+   These are deliberately derived from the seats' real measured edges rather than from
+   round numbers. Measured at 1440x900 on a 1325px felt:
+     linxing character x556-792  (centre 674 = 50.9% of felt)
+     mia     character x979-1215 (centre 1097 = 82.8% of felt)
+   The previous version read `--seat-right-x: 100%` and computed 63% for mia regardless of
+   where she actually sat, which is why her cards landed on top of linxing. Anything that
+   hard-codes the seat edge without reference to the seat's rendered width reintroduces
+   that bug, so these values carry the measured character centres directly. */
+.played-stack {
+  --seat-inset: 12%;
+}
+
+/* linxing: top-centre seat. Her own centre sits 52.5px right of the felt centre (the row
+   shift that re-centres her character), so her cards share that offset, then pull back
+   toward the middle by half the inset. */
+.from-pal-linxing {
+  top: calc(50% - var(--seat-inset) + 4%);
+  left: calc(50% + 52.5px);
+  transform: translate(-50%, -50%);
+}
+
+/* mia: right seat. Her cards belong in the gap between the two characters, not on top of
+   her: at 1440x900 that gap is x792-979 (midpoint 885.5), which is 223px = 16.8% of the
+   1325px felt right of centre. Centring there leaves ~37px clearance on both sides. */
+.from-pal-mia {
+  top: calc(50% - 6%);
+  left: calc(50% + 17%);
+  transform: translate(-50%, -50%);
+}
+
+/* player: the human seat is the left edge. At 40% the stack overlapped linxing, whose
+   character starts at 42% of the felt — the stack's half-width (56px) needs clearing, not
+   just its centre. 30% puts the box at 341-453 on a 1325px felt, well clear of her 556. */
+.from-player {
+  top: calc(50% + 18%);
+  left: 30%;
+  transform: translate(-50%, -50%);
+}
+
+/* Played cards must sit *in front of* the standee, never painted over its face.
+   Seats are z-index 2; the stage therefore drops below them and the individual
+   stacks opt back in — the card fan reads as being on the felt, at the player's edge. */
+.play-stage { z-index: 1; }
+.played-stack { z-index: 3; }
+.pal-bubble { z-index: 5; }
+
+/* The played stack is a 3-row block (label / cards / owner) and must clear the turn dock.
+   On a short felt it is the *play block* that has to give, not the seats: the seats have a
+   hard minimum below which a character is cropped, while the card fan can shrink freely. */
+.table-card-fan { min-height: clamp(52px, 17%, 85px); }
+.table-card { width: clamp(38px, 12.5%, 57px); height: clamp(52px, 17%, 78px); }
+.table-card b { font-size: clamp(15px, 4.4%, 20px); }
+.table-card small { font-size: clamp(17px, 5.2%, 24px); }

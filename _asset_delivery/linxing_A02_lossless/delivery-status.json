@@ -1,0 +1,6 @@
+{
+  "status": "TECHNICAL_PASS_REQUIRES_VISUAL_REVIEW",
+  "review_dir": "E:\\AI改编游戏\\换装斗地主\\_asset_delivery\\linxing_A02_lossless\\_review",
+  "source": "E:\\AI改编游戏\\换装斗地主\\角色五态包\\linxing\\linxing_A02_play_v1_chroma-despill.webm",
+  "next_action": "Review every variant preview; then run run_delivery.py --approve E:\\AI改编游戏\\换装斗地主\\_asset_delivery\\linxing_A02_lossless to create deliverable/."
+}

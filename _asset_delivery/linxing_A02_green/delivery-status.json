@@ -1,0 +1,7 @@
+{
+  "status": "BLOCKED",
+  "source": "E:\\AI改编游戏\\换装斗地主\\角色五态包\\linxing\\linxing_A02_play_v1_chroma-despill.webm",
+  "reason": "could not find enough green-screen pixels on the first frame border",
+  "next_action": "Provide a clean swatch, foreground hint, or corrected source, then run a new delivery job.",
+  "updated_at": "2026-09-08T10:59:15.717000+00:00"
+}

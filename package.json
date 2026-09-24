@@ -1,0 +1,26 @@
+{
+  "name": "dress-battle-doudizhu-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node apps/api/server.mjs",
+    "build": "node scripts/build-check.mjs",
+    "lint": "node scripts/quality-check.mjs",
+    "typecheck": "node scripts/quality-check.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:contracts": "node --test tests/contracts.test.mjs",
+    "test:pal-contract": "node --test tests/pal-asset.test.mjs",
+    "test:performance": "node --test tests/performance.test.mjs",
+    "test:e2e": "playwright test",
+    "verify:fixtures": "node scripts/verify-fixtures.mjs",
+    "css:classes": "node scripts/collect-live-classes.mjs",
+    "css:prune": "node scripts/prune-dead-css.mjs",
+    "css:prune:write": "node scripts/prune-dead-css.mjs --write",
+    "css:format": "node scripts/format-css.mjs apps/web/styles.css --write",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build && npm run verify:fixtures"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}
